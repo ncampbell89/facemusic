@@ -19,7 +19,7 @@
     "react-fb-image-grid": "^0.1.5",
     "react-hover-image": "^1.0.0",
     "react-icons": "^3.5.0",
-    "react-image-lightbox": "^0.5.19",
+    "react-image-lightbox": "^5.1.0",
     "react-message-box": "^1.0.6",
     "react-photo-gallery": "^6.3.2",
     "react-redux": "^6.0.1",

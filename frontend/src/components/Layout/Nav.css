@@ -1,0 +1,45 @@
+.nav_title {
+    color: #FFF;
+    font-family: 'Sarina', cursive;
+    font-size: 3rem;
+}
+
+.nav_subtitle {
+    color: #FFF;
+    font-size: 2rem;
+    font-family: 'Century Gothic', cursive;
+}
+
+.nav-item a {
+    color: #FFF !important;
+}
+
+.navbar {
+    margin-bottom: 0 !important;
+}
+
+.dropdown-menu a {
+    color: #000 !important;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.dropdown-menu .nav-item {
+    padding-left: 11px;
+}
+
+.dropdown-menu .nav-item a {
+    padding-left: 7px;
+}
+
+@media (max-width: 993px) {
+    a.nav_subtitle.nav-link.disabled {
+        font-size: 1.3rem !important;
+    }
+}
+
+@media (max-width: 991px) {
+    a.nav_subtitle.nav-link.disabled {
+        display: none !important;
+    }
+}

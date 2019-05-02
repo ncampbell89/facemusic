@@ -1,0 +1,8 @@
+{
+    "workbench.colorCustomizations": {
+        "tab.unfocusedActiveBorder": "#fff0",
+        "tab.activeBorder": "#ff00ff",
+        "statusBar.background": "#ff00ff",
+        "statusBar.foreground": "#000000"
+    }
+}

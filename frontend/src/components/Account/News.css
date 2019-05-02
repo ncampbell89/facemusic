@@ -1,0 +1,14 @@
+.list-container {
+    list-style-type: 'none';
+    font-family: 'sans-serif';
+    display: 'flex';
+}
+
+button .btn-info {
+    height: '31px';
+    display: 'none' !important;
+}
+/* 
+li:hover button {
+    display: flex;
+} */

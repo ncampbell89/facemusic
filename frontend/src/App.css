@@ -1,0 +1,13 @@
+body {
+  font-family: 'Century Gothic', cursive;
+  background-color: #DDD;
+}
+
+.flex-box {
+  display: flex;
+  justify-content: space-around;
+}
+
+label {
+  margin-bottom: 0 !important;
+}

@@ -1,28 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-kee-per.pem
-.gitlab-ci.yml
-deploy.sh
-.disableHostKeyChecking.sh
 .env
-
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+deploy.sh
+.gitlab-ci.yml
+disableHostKeyChecking.sh
+kee-per.pem
+node_modules/

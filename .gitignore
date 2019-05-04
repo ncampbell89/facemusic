@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 kee-per.pem
+.gitlab-ci.yml
+deploy.sh
+.disableHostKeyChecking.sh
+.env
 
 # testing
 /coverage

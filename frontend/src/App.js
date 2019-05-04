@@ -27,7 +27,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(('app.js'));
     
     return (
         <Provider store={store}>

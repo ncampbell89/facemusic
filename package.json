@@ -39,7 +39,8 @@
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.9.0",
     "uuidv4": "^3.0.1",
     "uws": "^100.0.1",
-    "validator": "^10.11.0"
+    "validator": "^10.11.0",
+    "homepage" : "http://ncampbell.github.io/facemusic"
   },
   "proxy": "http://localhost:3001"
 }

@@ -22,8 +22,11 @@ class News extends Component {
 
     shareArticle = (id, item) => {
         this.props.history.push('/newsfeed')
-        // window.location.href = '/newsfeed'
         this.props.addPostApi(id, item)
+
+        setTimeout(() => {
+            window.location.reload('/newsfeed')
+        }, 1000)
     }
 
   shareBtnShow = (event) => {

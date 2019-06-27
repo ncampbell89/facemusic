@@ -6,18 +6,10 @@ import { connect } from 'react-redux'
 import './Friends.css'
 
 class Friends extends Component {
-  state = {
-    friendsArr: []
-  }
 
   componentDidMount() {
     this.props.allFriends()
-
     this.props.allusersapi()
-    
-    // this.setState({
-    //   friendsArr: this.props.user.friends
-    // })
   }
 
   friendsProfile = (id) => { 
@@ -28,26 +20,29 @@ class Friends extends Component {
     let { friends, allUsers } = this.props.user
 
     let friendList;
-    
+ 
     if(friends !== undefined) {
 
       if(friends.length > 0) {
         friendList = (
           friends.map((friend, index) => {
+
             for(let i = 0; i < allUsers.length; i++) {
               if(allUsers[i].name === friend.name) {
                 friend.spotifyID = allUsers[i].spotifyID
               }
             }
+
             return (
               <li key={index} className="p-3">
-                <MainPic />&ensp; 
+                <MainPic name={friend.name} pic={friend.profilePic} id={friend.spotifyID} />&ensp; 
                     <Link to={`/profile/${friend.spotifyID}`} 
                       onClick={this.friendsProfile.bind(this, friend.spotifyID)}>
                       <b>{friend.name}</b>
                     </Link>
               </li>
             )
+
           })
         )
       }
@@ -60,13 +55,13 @@ class Friends extends Component {
 
     }
 
-    console.log(friendList)
-
     return (
       <div style={{margin: '3rem 0'}}>
         <h2 className="mb-5" style={{fontWeight: 'bold'}}>Friends</h2>
           <div style={{maxHeight: '17rem', overflowY: 'scroll', backgroundColor: '#FFF', padding: '1rem'}}> 
-            <ul className="friend-container" style={{listStyleType: 'none'}}>{friendList}</ul> 
+            <ul className="friend-container" style={{listStyleType: 'none'}}>
+            {friendList}  
+            </ul> 
           </div>
       </div> 
     )
@@ -74,7 +69,8 @@ class Friends extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.auth_state
+  user: state.auth_state,
+  updates: state.update_state
 })
 
 export default connect(mapStateToProps, { allFriends, allusersapi })(Friends)

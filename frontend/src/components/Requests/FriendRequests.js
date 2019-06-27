@@ -15,8 +15,8 @@ class FriendRequests extends Component {
     this.props.allPendingRequestsApi()
   }
 
-  acceptedRequest = (id, name) => {
-    this.props.friendsApi(id, name)
+  acceptedRequest = (id, name, userID) => {
+    this.props.friendsApi(id, name, userID)
     this.props.allFriendRequestsApi(id)
   }
 
@@ -29,10 +29,11 @@ class FriendRequests extends Component {
   }
 
   render() {
-    console.log(this.props)
+
     let { friendRequests, pendingRequests } = this.props.user
 
     let friendList = friendRequests.map((item, index) => {
+
       return (
         <ListGroup.Item key={index}>
           <p>
@@ -43,7 +44,7 @@ class FriendRequests extends Component {
           <div style={{display: 'flex'}}>
               <Button 
                 className="btn btn-success" 
-                onClick={this.acceptedRequest.bind(this, item._id, item.name)}
+                onClick={this.acceptedRequest.bind(this, item._id, item.name, item.spotify_id)}
               >
               Accept
               </Button>
@@ -82,7 +83,7 @@ class FriendRequests extends Component {
         <div className="col-lg-6">
           <h2 className="mb-5" style={{fontWeight: 'bold'}}>Friend Requests</h2>
             {
-              friendRequests.length == 0 ?
+              friendRequests.length === 0 ?
               <p>No friend requests</p> :                           
               <ListGroup>{friendList}</ListGroup>                        
             }
@@ -91,7 +92,7 @@ class FriendRequests extends Component {
         <div className="col-lg-6">
           <h2 className="mb-5" style={{fontWeight: 'bold'}}>Pending Requests</h2>
             {
-              pendingRequests.length == 0 ?
+              pendingRequests.length === 0 ?
               <p>No pending requests</p> :              
               <ListGroup>{pendingList}</ListGroup>
             }

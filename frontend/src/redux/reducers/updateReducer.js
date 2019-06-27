@@ -1,6 +1,8 @@
 import { 
     ALL_POSTS, 
-    ALL_POSTS_ERROR, 
+    ALL_POSTS_ERROR,
+    
+    NEWSFEED,
 
     ADD_POST, 
     ADD_POST_ERROR, 
@@ -15,7 +17,10 @@ import {
     EDIT_ABOUT,
     ABOUT_ME,
 
-    OTHER_PROFILE,
+    COMMENTS,
+    ALL_COMMENTS,
+    DELETE_COMMENT,
+    EDIT_COMMENT,
      
     ALL_PICS, 
     TOP_NEWS, 
@@ -23,6 +28,7 @@ import {
 
 const initialState = {
     posts: [],
+    postsForNewsfeed: [],
     display_name: '',
     about: '',
     pics: [],
@@ -30,7 +36,14 @@ const initialState = {
     topNews: [],
     allNews: [],
     error: null,
-    errorMessage: ''
+    errorMessage: '',
+    spotID: '',
+    comments: [],
+    allComments: [],
+    postUserID: '',
+    commentName: '',
+    commentPic: '',
+    editedComment: ''
 }
 
 export default (state = initialState, action) => {
@@ -40,6 +53,14 @@ export default (state = initialState, action) => {
         case ALL_POSTS:
             updated.display_name = action.payload.posts.display_name
             updated.posts = action.payload.posts
+            return updated;
+
+        case NEWSFEED:
+            action.payload.map(item => {
+                updated.spotID = item.spotifyID
+            })
+ 
+            updated.postsForNewsfeed = action.payload.reverse()
             return updated;
 
         case ALL_POSTS_ERROR:
@@ -54,8 +75,7 @@ export default (state = initialState, action) => {
             if(action.payload.hasOwnProperty('news')) {
                 action.payload.post = ""
             }
-
-            updated.posts.unshift(action.payload)       
+            updated.posts.unshift(action.payload)      
             return updated;
 
         case ADD_POST_ERROR:
@@ -80,7 +100,6 @@ export default (state = initialState, action) => {
 
 
         case DELETE_PIC: 
-            console.log(action)
             updated.pics = action.payload
             return updated;
 
@@ -93,7 +112,6 @@ export default (state = initialState, action) => {
                 updated.noPics = 'Fill up your photo gallery by adding cool images!'
             } 
             updated.pics = action.payload.pictures
-            console.log(updated)
             return updated;
 
         case TOP_NEWS:
@@ -112,10 +130,23 @@ export default (state = initialState, action) => {
             updated.about = action.payload
             return updated;
 
-        case OTHER_PROFILE:
-            action.payload.forEach(item => {
-                updated.about = item.about
-                updated.posts = item.posts
+        case COMMENTS: 
+            updated.comments.push(action.payload)         
+            return updated;
+
+        case ALL_COMMENTS:
+            updated.comments = action.payload      
+            return updated;
+
+        case DELETE_COMMENT:
+            updated.comments = action.payload
+            return updated;
+
+        case EDIT_COMMENT:         
+            updated.comments.forEach(item => {
+                return action.payload._id === item._id ?
+                    item.post = action.payload.post :
+                    item.post
             })
             return updated;
 

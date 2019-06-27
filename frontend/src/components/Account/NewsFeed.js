@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { onSuccessapi, allusersapi, userIdAndName } from '../../redux/actions/authActions';
-import { getAllPosts } from '../../redux/actions/updateActions';
+import { onSuccessapi, allusersapi, checkIfUserLoggedIn, otherPic } from '../../redux/actions/authActions';
+import { getAllPosts, postsForNewsfeed, allComments } from '../../redux/actions/updateActions';
 import PostList from './PostList';
 // import { Link } from 'react-router-dom'
 
@@ -11,7 +11,8 @@ class NewsFeed extends Component {
   }
 
   componentDidMount() {
-    this.props.getAllPosts()
+    this.props.postsForNewsfeed()
+    this.props.otherPic() 
   }
 
   searchInput = (event) => {
@@ -24,14 +25,18 @@ class NewsFeed extends Component {
     this.props.allusersapi(obj, resultStr)
   }
 
+  friendsProfile = (id) => { 
+    this.props.postlist(id)
+  }
+
   render() {
 
-    let { user_id } = this.props.user
-    let { posts } = this.props.update
+    let { postsForNewsfeed } = this.props.update
 
-    let allPosts = posts.map((item, index) => {
+    let allPosts = postsForNewsfeed.map((item, index) => {
+      console.log(item)
       return (
-        <PostList key={item._id} userid={user_id} item={item} />
+        <PostList key={item._id} item={item} profile={this.friendsProfile.bind(this, item.spotifyID)} />
       )
     })
 
@@ -58,4 +63,5 @@ const mapStateToProps = (state) => ({
   update: state.update_state
 })
 
-export default connect(mapStateToProps, { onSuccessapi, allusersapi, getAllPosts, userIdAndName })(NewsFeed)
+export default connect(mapStateToProps, { onSuccessapi, allusersapi, getAllPosts, 
+  postsForNewsfeed, checkIfUserLoggedIn, otherPic, allComments })(NewsFeed)

@@ -3,6 +3,8 @@ const moment = require('moment')
 
 const PendingRequest = new mongoose.Schema({
     name: { type: String, default: '' },
+    source_id: { type: String, default: '' },
+    spotify_id: { type: String, default: '' },
     user_id: { type: String, ref: 'Users' },
     timeStamp: {
         type: String,

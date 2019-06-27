@@ -21,7 +21,6 @@ import {
     CHOSEN_LIST,
 
     PLAYLIST,
-    PLAYLIST_ID,
     PLAYLIST_ERROR} from '../constants/genres';
 
 export const getallgenresapi = () => dispatch => {
@@ -142,14 +141,12 @@ export const chosenspotifylist = () => dispatch => {
 }
 
 export const playlist = (catID) => dispatch => {
-    console.log(catID)
     const spotifyBearerToken = localStorage.getItem('spotifyBearerToken');
 
     let axiosConfig = {
         headers: {
             'Accept': 'application/json',
-            'Authorization': `Bearer ${spotifyBearerToken}`,
-            'X-Content-Type-Options': 'nosniff'
+            'Authorization': `Bearer ${spotifyBearerToken}`
         }                               
     }
 
@@ -165,10 +162,10 @@ export const playlist = (catID) => dispatch => {
     .catch(error => {
         console.log(JSON.stringify(error))
 
-        // dispatch({
-        //     type: PLAYLIST_ERROR,
-        //     errMessage: error.response.data.error
-        // })
+        dispatch({
+            type: PLAYLIST_ERROR,
+            errMessage: error.response.data.error
+        })
     })
   
 }
@@ -176,15 +173,25 @@ export const playlist = (catID) => dispatch => {
 
 export const profilePage2 = (id) => dispatch => { 
 
-    if(id !== undefined) {
-        Axios.get(`/users/profilegenres/${id}`)
-        .then(genres => {
-            dispatch({
-                type: OTHER_GENRES,
-                payload: genres.data
-            }) 
-        })
-        .catch(err => console.log(JSON.stringify(err)))
-    }
+    Axios.get(`/users/profilegenres/${id}`)
+    .then(genres => {
+        console.log(genres)
+        dispatch({
+            type: OTHER_GENRES,
+            payload: genres.data
+        }) 
+    })
+    .catch(err => console.log(JSON.stringify(err)))
+    
+    // if(id !== undefined) {
+    //     Axios.get(`/users/profilegenres/${id}`)
+    //     .then(genres => {
+    //         dispatch({
+    //             type: OTHER_GENRES,
+    //             payload: genres.data
+    //         }) 
+    //     })
+    //     .catch(err => console.log(JSON.stringify(err)))
+    // }
     
 }

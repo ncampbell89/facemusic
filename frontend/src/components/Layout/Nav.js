@@ -5,15 +5,13 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
-import { logoutapi, checkIfUserLoggedIn, deleteaccount, userIdAndName } from '../../redux/actions/authActions'
+import { logoutapi, checkIfUserLoggedIn, deleteaccount } from '../../redux/actions/authActions'
 import { getallgenresapi } from '../../redux/actions/genresActions';
 
 import { connect } from 'react-redux';
 import jwt_decode from 'jwt-decode';
-import MainPic from './MainPic';
-
+import noPic from '../images/noPic.jpg';
 import './Nav.css'
-
 
 class Navclass extends Component {
     state = {}
@@ -25,7 +23,7 @@ class Navclass extends Component {
             // call the function checkIfUserLoggedIn 
             let decoded = jwt_decode(token)
             this.props.checkIfUserLoggedIn(decoded)
-            this.props.userIdAndName()
+            this.props.checkIfUserLoggedIn()
         }          
     }
 
@@ -67,8 +65,20 @@ class Navclass extends Component {
 
 
   render() {
-    let { logError, logMessage, name, user_id } = this.props.user
+    let { logError, logMessage, name, user_id, profilePic } = this.props.user
     const token = localStorage.getItem('jwtToken')
+
+    let thePic;
+
+    if(profilePic) { // if a profile pic exists
+      thePic = (
+        <img src={profilePic} width="30" height="30" className="mainPic" alt="" />
+      )
+    } else { // if a profile pic does NOT exist
+      thePic = (
+        <img src={noPic} width="30" height="30" className="mainPic" alt="" />
+      )
+    }
 
     return (
         <div>
@@ -78,7 +88,7 @@ class Navclass extends Component {
                     <div className="nav_subtitle">Where harmony brings people together</div>
                 </Navbar.Brand>
     
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav" className="btnPosition" />
     
                 <Navbar.Collapse id="basic-navbar-nav">
     
@@ -91,7 +101,7 @@ class Navclass extends Component {
                                 <Link to="/news" className="mr-4 text-right">News</Link>  
                                 <Link to="/search" className="mr-4">Search</Link> 
     
-                                <MainPic />                     
+                                {thePic}                     
     
                                 <NavDropdown title={name} id="basic-nav-dropdown" className="mr-4">
                                     <NavDropdown.Item href={`/profile/${user_id}`}>Profile</NavDropdown.Item>
@@ -141,4 +151,4 @@ const mapStateToProps = (state) => ({
     genres: state.todo_state
 })
 
-export default connect(mapStateToProps, { getallgenresapi, logoutapi, checkIfUserLoggedIn, deleteaccount, userIdAndName })(Navclass)
+export default connect(mapStateToProps, { getallgenresapi, logoutapi, checkIfUserLoggedIn, deleteaccount })(Navclass)

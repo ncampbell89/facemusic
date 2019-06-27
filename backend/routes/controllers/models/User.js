@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, default: '' },
     spotifyID: { type: String, default: '' },
     about: { type: String, default: 'Tell us something exciting about yourself!' },
-    profilePic: [{ type: Schema.Types.ObjectId, ref: 'ProfilePic' }],
+    profilePic: { type: String, default: '' },
     genres: [{ type: Schema.Types.ObjectId, ref: 'Genres' }],
     messages: [{ type: Schema.Types.ObjectId, ref: 'Messages' }],
     posts: [{ type: Schema.Types.ObjectId, ref: 'Posts' }],
@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
     friendRequests: [{ type: Schema.Types.ObjectId, ref: 'FriendRequests' }],
     pendingRequests: [{ type: Schema.Types.ObjectId, ref: 'PendingRequests' }],
     friends: [{ type: Schema.Types.ObjectId, ref: 'Friends' }],
+    // comments: [{ type: Schema.Types.ObjectId, ref: 'Comments' }],
     timestamp: {
         type: String,
         default: () => moment().format('dddd, MMMM Do YYYY, h:mm:ss a')

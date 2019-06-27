@@ -28,8 +28,6 @@ class Profile extends Component {
   }
 
   render() {
-    console.log('Profile.js');
-    
     return (
       <div className="container mt-5">
         <About about={this.friendsProfile} />
@@ -38,14 +36,12 @@ class Profile extends Component {
         <Posts posts={this.friendsProfile} />
       </div>
     )
-
   }
 
 }
 
 const mapStateToProps = state => ({
-  user: state.auth_state,
-  updates: state.update_state
+  user: state.auth_state
 })
 
 export default connect(mapStateToProps, { allFriends, allusersapi, profilePage, profilePage2, aboutEditApi })(Profile)

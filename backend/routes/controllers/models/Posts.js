@@ -8,6 +8,8 @@ const PostSchema = new mongoose.Schema({
     news: { type: Object, default: {} },
     playlist: { type: Object, default: {} },
     spotifyID: { type: String, default: '' },
+    picture: { type: String, default: '' },
+    comments: [{ type: Schema.Types.ObjectId, ref: 'Comments' }],
     user_id: { type: Schema.Types.ObjectId, ref: 'Users' },
     timestamp: {
         type: String,

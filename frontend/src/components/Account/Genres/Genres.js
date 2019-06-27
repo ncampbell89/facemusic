@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { addgenresapi, handledeleteapi, getallgenresapi, 
         spotify, chosenspotifylist } from '../../../redux/actions/genresActions';
-import { userIdAndName } from '../../../redux/actions/authActions';
+import { checkIfUserLoggedIn } from '../../../redux/actions/authActions';
 
 import GenresList from './GenresList';
 import { Dropdown } from 'react-bootstrap';
@@ -18,7 +18,7 @@ class Genres extends Component {
   componentDidMount() {
     this.props.spotify()
     this.props.getallgenresapi() 
-    this.props.userIdAndName() 
+    this.props.checkIfUserLoggedIn() 
   }
 
   handleInput = event => {
@@ -167,4 +167,4 @@ const mapStateToProps = (state) => ({
 })
 
 export default connect(mapStateToProps, { 
-  addgenresapi, handledeleteapi, getallgenresapi, spotify, chosenspotifylist, userIdAndName })(Genres);
+  addgenresapi, handledeleteapi, getallgenresapi, spotify, chosenspotifylist, checkIfUserLoggedIn })(Genres);

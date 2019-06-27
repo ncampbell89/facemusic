@@ -1,12 +1,11 @@
 import {  
     ALL_USERS,
-    USER_ID, 
     LOG_IN_CHECK, 
     ON_SUCCESS,
     EXPIRATION, 
     LOG_OUT,
     
-    // PROFILE_PIC,
+    PROFILE_PIC,
     MAIN_PIC,
 
     FRIEND_REQUESTS,
@@ -18,6 +17,7 @@ import {
     PENDING_REQUEST_LIST,
 
     OTHER_PROFILE,
+    OTHER_PROFILE_PIC,
     // OTHER_GENRES,
 
     FRIENDS,
@@ -30,6 +30,7 @@ var initialState = {
     email: '',
     name: '',
     user_id: null,
+    current_id: null,
     spotifyID: null,
     link: '',
     images: [],
@@ -38,11 +39,15 @@ var initialState = {
     friendRequests: [],
     pendingRequests: [],
     friends: [],
+    userPosts: [],
     isAccepted: null,
 
     logError: null,
     logMessage: '',
-    profilePic: ''
+    profilePic: '',
+    otherProfilePic: '',
+    profilePictures: [],
+    otherAbout: ''
 }
 
 export default (state = initialState, action) => {
@@ -53,14 +58,7 @@ export default (state = initialState, action) => {
             updated.allUsers = action.payload           
             return updated;
 
-        case USER_ID:
-            console.log(action)
-            updated.user_id = action.payload.id
-            updated.name = action.payload.display_name
-            return updated;
-
         case ON_SUCCESS:
-            console.log(action)
             updated.name = action.resp.display_name
             updated.email = action.resp.email
             updated.spotifyID = action.resp.id
@@ -69,6 +67,7 @@ export default (state = initialState, action) => {
             return updated;
 
         case LOG_IN_CHECK:
+            updated.user_id = action.payload.id
             updated.name = action.payload.display_name
             return updated;
 
@@ -94,13 +93,12 @@ export default (state = initialState, action) => {
             updated.pendingRequests = action.payload
             return updated;
 
-        case FRIENDS:           
+        case FRIENDS: 
+            // action.payload.pendingRequests          
             return updated;
 
         case FRIENDS_LIST:
-            // console.log(action)
             updated.friends = action.payload.friends
-            console.log(updated)
             return updated;
 
         case DECLINE_REQUEST:
@@ -111,20 +109,31 @@ export default (state = initialState, action) => {
             updated.pendingRequests = action.payload.pendingRequests
             return updated;
 
+        case PROFILE_PIC:
+            // put request
+            updated.profilePic = action.payload.profilePic
+            return updated;
 
         case MAIN_PIC:
-            updated.profilePic = action.payload.profilePic[0]
+            // get request
+            updated.profilePic = action.payload.profilePic
             return updated;
 
 
         case OTHER_PROFILE: 
-            action.payload.forEach(item => {
-                updated.friends = item.friends
-            })      
+            console.log(action.payload)
+            updated.otherAbout = action.payload.about           
+            updated.friends = action.payload.friends
+            updated.userPosts = action.payload.posts
+            return updated;
+
+        case OTHER_PROFILE_PIC:
+            console.log(action.payload)
+            // updated.otherProfilePic = action.payload
             return updated;
 
         case DELETE_ACCOUNT:
-            //console.log(action.payload)
+            console.log(action.payload)
             return updated;
 
         default:

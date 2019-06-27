@@ -69,13 +69,23 @@ router.get('/allpendingrequests/:id', (req, res) => {
 
 
 router.post('/friends', (req, res) => {
+
   userController.friends(req.body)
-  .then(user => {
-    res.json(user)
-  })
-  .catch(err => {
-    res.status(400).json(err)
-  })
+    .then(user => {
+      
+      userController.friendsSource(req.body)
+      .then(user => {
+        res.json(user)
+      })
+      .catch(err => {
+        res.status(400).json(err)
+      })
+
+    })
+    .catch(err => {
+      res.status(400).json(err)
+    })
+
 });
 
 router.get('/allFriends/:id', (req, res) => {
@@ -109,8 +119,8 @@ router.delete('/cancelrequest/:id', (req, res) => {
 });
 
 
-router.post('/profilepic', (req, res) => {
-  userController.profilePic(req.body)
+router.put('/profilepic/:id', (req, res) => {
+  userController.editProfilePic(req.params.id, req.body)
   .then(user => {
     res.json(user)
   })
@@ -119,8 +129,18 @@ router.post('/profilepic', (req, res) => {
   })
 });
 
-router.get('/profilepics/:id', (req, res) => {
-  userController.profilePicUrls(req.params.id)
+router.get('/profilepicurl/:id', (req, res) => {
+  userController.profilePicUrl(req.params.id, req.query.req)
+  .then(user => {
+    res.json(user)
+  })
+  .catch(err => {
+    res.status(400).json(err)
+  })
+});
+
+router.get('/otherprofilepicurl/:id', (req, res) => {
+  userController.otherProfilePicUrl(req.params.id)
   .then(user => {
     res.json(user)
   })

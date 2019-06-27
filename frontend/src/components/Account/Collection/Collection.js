@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { chosenspotifylist, profilePage2, playlist } from '../../../redux/actions/genresActions';
-import { userIdAndName } from '../../../redux/actions/authActions';
+import { chosenspotifylist, profilePage2 } from '../../../redux/actions/genresActions';
+import { checkIfUserLoggedIn } from '../../../redux/actions/authActions';
 import CollectionList from './CollectionList';
 import './collection.css';
 import InGenre from '../Genres/InGenre';
@@ -12,7 +12,7 @@ class Collection extends Component {
     componentDidMount() {
       this.props.chosenspotifylist() 
       this.props.profilePage2()
-      this.props.userIdAndName()
+      this.props.checkIfUserLoggedIn()
     }
 
     goToPreviousURL = (id) => {
@@ -20,20 +20,43 @@ class Collection extends Component {
     }
 
   render() {
-    let { error, errorMessage, genres } = this.props.genres;
+    let splitted = window.location.href.split('/')
+    let identification = splitted[splitted.length - 1]
 
-    let genreArr = genres.map((item, index) => {
-      return (
-        <CollectionList key={index} userID={item.userID} pics={item.icons} item={item} />
+    let { error, errorMessage, genres, otherGenres } = this.props.genres;
+    let { user_id } = this.props.user
+
+    let genreArr;
+
+    if(user_id !== identification) {
+      genreArr = (
+        otherGenres.map((item, index) => { 
+          return (
+            <CollectionList key={index} userID={item.userID} pics={item.icons} item={item} />
+          )
+        }) 
       )
-    }) 
-    console.log(genreArr.length) 
+    } else {
+      genreArr = (
+        genres.map((item, index) => { 
+          return (
+            <CollectionList key={index} userID={item.userID} pics={item.icons} item={item} />
+          )
+        }) 
+      )
+    }
 
     genres.map((item, index) => {
       return (
         <InGenre item={item} />
       )
-    })
+    }) 
+
+    otherGenres.map((item, index) => {
+      return (
+        <InGenre item={item} />
+      )
+    }) 
 
     return (
       <React.Fragment>
@@ -71,4 +94,4 @@ const mapStateToProps = (state) => ({
     user: state.auth_state
 })
 
-export default connect(mapStateToProps, { chosenspotifylist, userIdAndName, profilePage2 })(Collection)
+export default connect(mapStateToProps, { chosenspotifylist, checkIfUserLoggedIn, profilePage2 })(Collection)

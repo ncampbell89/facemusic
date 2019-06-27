@@ -18,25 +18,12 @@ class InGenreList extends Component {
     trackID: ''
   }
 
-  // playTrack = () => {
-    
-  //   this.setState({
-  //     playlistID: this.props.genres.category, // lowercase word
-  //     trackID: this.props.item.id
-  //   }, () => {
-  //     this.props.playlist(this.state.playlistID, this.state.trackID)
-  //   })
-
-  //   let { spotify } = this.props.item.external_urls
-  //   let audio = new Audio(spotify)
-  //   audio.type = 'audio/mp3'
-  //   audio.play()
-
-  // }
-
   sharePlaylist = (id, item, playlist) => {
     this.props.addPostApi(id, item, playlist)
-    window.location.href = "/newsfeed" 
+ 
+    setTimeout(() => {
+      window.location.reload('/newsfeed')
+    }, 1000)
   }
 
   render() {

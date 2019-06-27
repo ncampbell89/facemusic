@@ -12,7 +12,7 @@ class CollectionList extends Component {
 
     componentDidMount() {
         this.setState({
-            listPiece: this.props.item.name
+          listPiece: this.props.item.name
         })
         this.props.profilePage2() 
 
@@ -43,6 +43,7 @@ class CollectionList extends Component {
     }
 
   render() {
+
     return (
       <li className="collectionPiece" onClick={this.toInGenre.bind(this, this.props.item.id)}>
         <h3 style={{color: 'black', marginBottom: '1rem'}}>{this.state.listPiece}</h3>

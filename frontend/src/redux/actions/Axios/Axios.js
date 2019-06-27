@@ -1,8 +1,10 @@
 import axios from 'axios';
 
 const Axios = axios.create({
-    // baseURL: 'http://localhost:3001',
-    baseURL: 'http://172.31.93.58:3001',
+    baseURL: 'https://www.facespotifymusic.com:3001',
+    headers: {
+        'Access-Control-Allow-Origin': '*'
+    },
     timeout: 3600000 // 1 hour
 });
 

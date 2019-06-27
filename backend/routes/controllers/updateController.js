@@ -1,8 +1,17 @@
 const Posts = require('./models/Posts');
 const User = require('./models/User');
 const Pictures = require('./models/Pictures');
+const Comments = require('./models/Comments');
 
 module.exports = {
+    postsModel: () => {
+        return new Promise((resolve, reject) => {
+            Posts.find()
+            .then(result => resolve(result))
+            .catch(err => reject(err))
+        })
+    },
+
     getAllPosts: (id) => {
         return new Promise((resolve, reject) => {
             User.findOne({spotifyID: id}, 'posts')
@@ -15,7 +24,7 @@ module.exports = {
 
     createPost: params => {    
         return new Promise((resolve, reject) => {
-            console.log(params)
+
             User.findOne({spotifyID: params.id})
             .then(user => {
 
@@ -24,6 +33,7 @@ module.exports = {
                     news: params.newStatusNews,
                     playlist: params.newStatusPlaylist,
                     spotifyID: params.id,
+                    picture: params.profilePic,
                     display_name: params.name,
                     user_id: user._id
                 })
@@ -174,6 +184,96 @@ module.exports = {
             User.findOne({spotifyID: id}, 'about')
             .then(result => resolve(result))
             .catch(err => reject(err))
+        })
+    },
+
+    comments: (params) => {
+        return new Promise((resolve, reject) => {
+
+            Posts.findOne({_id: params.postid})
+            .then(post => {
+                let newComment = new Comments({
+                    post: params.comment,
+                    theUser: params.id,
+                    name: params.name,
+                    picture: params.picture,
+                    user_id: params.postid
+                })
+
+                newComment.save()
+                .then(saved => {                      
+                    post.comments.push(saved)
+
+                    post.save()
+                    .then(() => {
+                        resolve(saved)
+                    })
+                    .catch(err => reject(err))
+                })
+                .catch(err => reject(err))
+            })
+            .catch(err => {
+                reject(err)
+            })
+         
+        })
+    }, 
+
+    allComments: () => {
+        return new Promise((resolve, reject) => {
+            Comments.find()
+                .then(result => resolve(result))
+                .catch(err => reject(err))
+        })
+    },
+
+    deleteComment: (userID, postID, commID) => {
+        return new Promise((resolve, reject) => {
+
+            Posts.findById({_id: postID})
+            .then(post => {
+
+                let filtered = post.comments.filter(deleted => {
+                    return deleted != commID
+                })
+
+                post.comments = filtered
+
+                post.save()
+                .then(() => {
+                    Comments.findByIdAndDelete({_id: commID})
+                    .then(() => {
+                        Posts.findById({_id: postID}, 'comments')
+                        .populate('comments', '-user_id -__v')
+                        .exec((err, user) => {
+                            err ? reject(err) : resolve(user)
+                        })
+                    })
+                    .catch(err => reject(err))
+                })
+                .catch(err => reject(err))
+            })
+            .catch(err => reject(err))
+
+        })
+    },
+
+    editComment: (id, newState, newStateID) => {
+        return new Promise((resolve, reject) => {
+            Comments.findOneAndUpdate({_id: newStateID}, {$set: {post: newState}}, {new: true})
+            .then(comm => resolve(comm))
+            .catch(err => reject(err))        
+        })
+    },
+
+    editPost: (userid, postid) => {
+        return new Promise((resolve, reject) => {
+            console.log(userid, postid);
+            
+            // User.findOne({spotifyID: userid})
+            // .then(user => {
+            //     Posts.findByIdAndUpdate({_id: postid}, )
+            // })
         })
     }
 }

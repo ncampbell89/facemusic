@@ -1,3 +1,3 @@
-export const clientId = 'b40a880e696b433981d9888e1f9c9ab3'
+export const clientId = '5445014665f14870bc86cc9e7e7a21d6'
 
-export const redirectUri = 'http://3.89.148.114:3000/callback/'
+export const redirectUri = 'http://localhost:3000'

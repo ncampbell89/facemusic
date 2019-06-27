@@ -27,15 +27,19 @@ class Pictures extends Component {
     fileUpload.addEventListener('change', event => {
         this.props.addPictureApi(event)
     })
+    
     this.props.allPicturesApi(this.props)
     this.props.profilePicUrls(this.props)
   }
 
   profilePic = (picID, url) => {
     this.setState({
-      updateProfilePic: url
+      updateProfilePic: url,
+    }, () => {
+      this.props.profilePic(picID, this.state.updateProfilePic)
     })
-    this.props.profilePic(picID, url)
+
+    // window.location.reload()
   }
 
   deleteBtn = id => {
@@ -51,10 +55,6 @@ class Pictures extends Component {
     let parent = imgs[id].parentElement 
     let button = parent.getElementsByTagName('button')[0]
     button.style.opacity = '0'
-
-    // button.onmouseover = function() {
-    //   this.style.opacity = '1'
-    // }
 
     // onmouseout state
     const uls = parent.getElementsByTagName('ul')
@@ -79,9 +79,6 @@ class Pictures extends Component {
   }
 
   render() {
-    // console.log(this.props.user.profilePic.url)
-
-    // let { url } = this.props.user.profilePic
     let { pics, error, errorMessage, noPics } = this.props.update
     const { photoIndex, isOpen } = this.state;
 
@@ -91,32 +88,22 @@ class Pictures extends Component {
       images.push(item.url)
       keys.push(item._id)
       return (
-        <img key={item._id} src={item.url} className="imgs" width="285" height="285" alt="" />
+        <img key={item._id} src={item.url} onClick={() => this.setState({ photoIndex: index })} className="imgs" width="285" height="285" alt="" />
       )   
     })
 
-    // for(let i = 0; i < mainPic.length; i++) {
-    //   String.prototype.replace(mainPic[i].src, this.state.profilePic)
-    // }
-    
-    // ['Set as profile picture', 'Add a filter effect', 'Delete picture']
-
-    var mainPic = document.getElementsByClassName('mainPic')
-    console.log(mainPic[0])
-
     return ( 
       <div className="mb-5">
+        
         <h2 style={{marginLeft: '39px', marginBottom: '0px', fontWeight: 'bold'}}>Photo Gallery</h2>
 
         <div style={{margin: '2rem 4rem'}}>
           {pics.length === 0 ? noPics :
           <div>
 
-            <div className="img-container" onClick={() => this.setState({ isOpen: true })}>
+            <div id="img-container" className="img-container" onClick={() => this.setState({ isOpen: true })}>
               {gallery}
             </div>
-
-            {/* {this.state.profilePic} */}
 
             {isOpen ? 
               <Lightbox 

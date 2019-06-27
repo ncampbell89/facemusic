@@ -1,5 +1,6 @@
 export const ALL_POSTS = 'ALL_POSTS'
 export const ALL_POSTS_ERROR = 'ALL_POSTS_ERROR'
+export const NEWSFEED = 'NEWSFEED'
 
 export const ADD_POST = 'ADD_POST'
 export const ADD_POST_ERROR = 'ADD_POST_ERROR'
@@ -21,3 +22,8 @@ export const EDIT_ABOUT = 'EDIT_ABOUT'
 export const ABOUT_ME = 'ABOUT_ME'
 
 export const OTHER_PROFILE = 'OTHER_PROFILE'
+
+export const COMMENTS = 'COMMENTS'
+export const ALL_COMMENTS = 'ALL_COMMENTS'
+export const DELETE_COMMENT = 'DELETE_COMMENT'
+export const EDIT_COMMENT = 'EDIT_COMMENT'

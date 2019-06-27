@@ -42,3 +42,62 @@
     margin: 0 auto;
     background-color: antiquewhite;
 }
+
+@media (max-width: 708px) {
+    .content h1 {
+        font-size: 3em;
+    }
+
+    .content h2 {
+        font-size: 2.5em;
+    }
+
+    .content p {
+        font-size: 1.1em;
+    }
+
+    .spotify_btn {
+        width: 43%;
+    }
+}
+
+@media (max-width: 552px) {
+    .content h1 {
+        font-size: 3em;
+    }
+
+    .content h2 {
+        font-size: 2em;
+        margin-bottom: 3rem;
+    }
+
+    .content p {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+
+    .spotify_btn {
+        font-size: 0.8em;
+    }
+}
+
+@media (max-width: 375px) {
+    .content h1 {
+        font-size: 2.5em;
+    }
+
+    .content h2 {
+        font-size: 1.5em;
+        margin-bottom: 2rem;
+        margin-top: 1rem;
+    }
+
+    .content p {
+        font-size: 0.8em;
+        margin-bottom: 7px;
+    }
+
+    .spotify_btn {
+        font-size: 0.6em;
+    }
+}

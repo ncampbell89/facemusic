@@ -35,21 +35,19 @@ class App extends Component {
             <div>             
               <Navclass />
 
-              {/* {window.location.href == '/newsfeed' || window.location.href == '/search' ? <SearchBar /> : ''} */}
-
               <Switch>
                 <Route exact path="/" component={Intro} />
                 <Route exact path="/newsfeed" component={NewsFeed} />
                 <Route exact path="/news" component={News} />
                 <Route exact path="/genrelist" component={Genres} />
                 <Route exact path="/profile/:id" component={Profile} />
+                {/* <Route exact path="/friend/:id" component={FriendsProfile} /> */}
                 <Route exact path="/ingenre/:id" component={InGenre} />
                 <Route exact path="/requests" component={FriendRequests} />
                 <Route exact path="/messages" component={Messages} />
                 <Route exact path="/pictures" component={Pictures} />
                 <Route exact path="/search" component={PeopleSearch} />
                 <Route exact path="/deletepic" component={DeletePic} />
-
                 <Route exact path="/friends" component={Friends} />
               </Switch>
 

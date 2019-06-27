@@ -20,15 +20,6 @@ class InGenre extends Component {
     this.props.playlist(this.state.catID)
   }
 
-  // async songList() {
-  //   try {
-  //     await this.props.playlist(this.state.catID)
-  //   }
-  //   catch(err) {
-  //     console.log(JSON.stringify(err))
-  //   }
-  // }
-
   errorTimeout = () => {
     setTimeout(() => {
       window.location.href = '/profile'
@@ -46,7 +37,6 @@ class InGenre extends Component {
     }
 
     let { playlists } = this.props.genres
-    console.log(playlists)
 
     let list = playlists.map((item, index) => {
       return (

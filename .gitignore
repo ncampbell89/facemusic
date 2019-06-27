@@ -4,4 +4,6 @@ deploy.sh
 disableHostKeyChecking.sh
 kee-per.pem
 node_modules/
-package-lock.json
+/socket
+package-lock.json/
+

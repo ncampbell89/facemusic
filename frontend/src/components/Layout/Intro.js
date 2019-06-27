@@ -1,23 +1,56 @@
 import React, { Component } from 'react'
 import './MainPage.css'
-import SpotifyLogin from 'react-spotify-login';
 import { clientId, redirectUri } from './settings';
 import { onSuccessapi } from '../../redux/actions/authActions';
 import { connect } from 'react-redux';
 import NewsFeed from '../Account/NewsFeed';
 
-class Intro extends Component {
+export const authEndpoint = 'https://accounts.spotify.com/authorize';
 
-  onSuccess = (response) => {
-    this.props.onSuccessapi(response.access_token) 
+// Replace with your app's client ID, redirect URI and desired scopes
+const scopes = [
+  "user-read-currently-playing",
+  "user-read-private"
+];
+
+
+// Get the hash of the url
+const hash = window.location.hash
+  .substring(1)
+  .split("&")
+  .reduce(function(initial, item) {
+    if (item) {
+      var parts = item.split("=");
+      initial[parts[0]] = decodeURIComponent(parts[1]);
+    }
+    return initial;
+  }, {});
+window.location.hash = "";
+
+
+class Intro extends Component {
+  state = {
+    token: null
   }
+
+  componentDidMount() {
+    // Set token
+    let _token = hash.access_token;
+
+    if (_token) {
+      // Set token
+      this.setState({
+        token: _token
+      }, () => {
+        this.props.onSuccessapi(this.state.token)
+      });
+    }
+  } 
 
   onFailure = response => console.error(response);
 
-    render() {
-
-      const token = localStorage.getItem('jwtToken')
-
+    render() { 
+      const token = localStorage.getItem('jwtToken') 
       return (
         <React.Fragment>
           {token ? <NewsFeed /> :
@@ -45,7 +78,7 @@ class Intro extends Component {
                     </p>
 
                     <p>
-                      <b>Coming Soon:</b> Messaging, setting profile picture, and photo filter effects
+                      <b>Coming Soon:</b> Messaging, setting likes, and photo filter effects
                     </p>
                   </div>
 
@@ -53,14 +86,12 @@ class Intro extends Component {
 
                   <br />
 
-                  <SpotifyLogin
-                      buttonText="Register or Login with Spotify"
-                      className="spotify_btn"
-                      clientId={clientId}
-                      redirectUri={redirectUri}
-                      onSuccess={this.onSuccess}
-                      onFailure={this.onFailure} 
-                  />
+                  <a className="spotify_btn"                
+                    href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`}
+                  >                  
+                    Register or Login with Spotify
+                  </a>
+
                 </div>
               </div>
           }

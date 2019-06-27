@@ -5,10 +5,9 @@ const uuid = require('uuidv4');
 const SpotifyWebApi = require('spotify-web-api-node');
 
 const spotifyApi = new SpotifyWebApi({
-    clientId: 'b40a880e696b433981d9888e1f9c9ab3',
-    clientSecret: 'a549535cd6a042e8ae4ccf1e753405a6',
-    redirectUri: 'http://172.31.93.58:3001/auth/spotify/callback'
-    // redirectUri: 'http://localhost:3001/auth/spotify/callback'
+    clientId: '5445014665f14870bc86cc9e7e7a21d6',
+    clientSecret: '2d690fc37d6d4670a11f9d3cf19e2707',
+    redirectUri: 'https://www.facespotifymusic.com:3000'
 });
 
 
@@ -120,8 +119,6 @@ module.exports = {
 
                 spotifyApi.clientCredentialsGrant()                  
                 .then(data => {
-                    console.log('The access token expires in ' + data.body['expires_in']);
-                    console.log('The access token is ' + data.body['access_token']);
 
                     // Save the access token so that it's used in future calls
                     spotifyApi.setAccessToken(data.body['access_token']);
@@ -130,7 +127,6 @@ module.exports = {
                         country: 'US'
                     })  
                     .then(data => {
-                        // console.log(data)
                         let { items } = data.body.categories
                         resolve(items)
                     })
@@ -140,12 +136,11 @@ module.exports = {
 
                 })
                 .catch(err => {
-                    console.log('Something went wrong when retrieving an access token', err.message);
                     reject(err)
                 })
             })
             .catch(err => {
-                console.log(err)
+                reject(err)
             })
 
         })
@@ -162,8 +157,6 @@ module.exports = {
 
                     spotifyApi.clientCredentialsGrant()
                     .then(data => {
-                        console.log('The access token expires in ' + data.body['expires_in']);
-                        console.log('The access token is ' + data.body['access_token']);
     
                         // Save the access token so that it's used in future calls
                         spotifyApi.setAccessToken(data.body['access_token']);
@@ -201,7 +194,7 @@ module.exports = {
                                 })
                     })
                     .catch(error => {
-                        console.log(error)
+                        reject(error)
                     })
 
                 }
@@ -212,45 +205,6 @@ module.exports = {
 
         }) // end Promise
         
-    },
-
-    albumInfo: (category) => {
-        console.log('category')
-        console.log(category)
-
-        return new Promise((resolve, reject) => {
-            User.findById({_id: id}, 'genres')
-            .populate('genres', '-user_id -__v')
-            .exec((err, user) => {
-                
-                if(err) {
-                    console.log(err)
-                    reject(err)
-                } else if(user) {
-
-                    spotifyApi.clientCredentialsGrant()
-                    .then(result => {
-                        spotifyApi.setAccessToken(data.body['access_token']);
-
-                        spotifyApi.getAlbums(data.body['access_token'])
-                        .then(data => {
-                            console.log('Albums information', data.body);
-                        })
-                        .catch(err => {
-                            console.log(err)
-                        })
-
-                        console.log('result')
-                        console.log(result)
-                    })
-                    .catch(error => {
-                        console.log('error')
-                        console.log(error)
-                    })                   
-
-                }
-            })
-        })
     },
 
     genresPicked: (id) => {
@@ -265,8 +219,6 @@ module.exports = {
                 } else if(user) {
                     spotifyApi.clientCredentialsGrant()
                     .then(data => {
-                        console.log('The access token expires in ' + data.body['expires_in']);
-                        console.log('The access token is ' + data.body['access_token']);
 
                         spotifyApi.setAccessToken(data.body['access_token'])
 
@@ -286,7 +238,6 @@ module.exports = {
                                     data.body.itemID = uuid()
                                     data.body.accessToken = accessToken  
                                     data.body.userID = id
-                                    console.log(data.body) 
                                     resolve(data.body)
                                 })
                                 .catch(err => {
@@ -325,8 +276,6 @@ module.exports = {
                 } else if(user) {                  
                     spotifyApi.clientCredentialsGrant()
                     .then(data => {
-                        console.log('The access token expires in ' + data.body['expires_in']);
-                        console.log('The access token is ' + data.body['access_token']);
     
                         // Save the access token so that it's used in future calls
                         spotifyApi.setAccessToken(data.body['access_token']); 
@@ -349,7 +298,7 @@ module.exports = {
 
                         })
                         .catch(err => {
-                            console.log(err)
+                            reject(err)
                         })                        
                     })
                     .catch(error => reject(error))

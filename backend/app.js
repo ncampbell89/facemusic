@@ -6,6 +6,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var cors = require('cors');
 var methodOverride = require('method-override');
+var cloudinary = require('cloudinary');
 
 var usersRouter = require('./routes/users');
 var genresRouter = require('./routes/genres');
@@ -21,10 +22,18 @@ var app = express();
 
 require('dotenv').config();
 
+cloudinary.config({ 
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET
+})
+
 mongoose.connect(
   process.env.MONGODB_URI, { useNewUrlParser: true }, err => 
   err ? console.log('Error: ', err) : console.log('MongoDB is connected!')
 )
+
+mongoose.set('useFindAndModify', false);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -38,17 +47,19 @@ app.use(express.static(path.join(__dirname, 'frontend/build')));
 app.use(cors());
 app.use(methodOverride('_method')); 
 
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
-
 app.use('/users', usersRouter);
 app.use('/genres', genresRouter);
 app.use('/messages', messageRouter);
 app.use('/updates', updateRouter);
 app.use('/', indexRouter);
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Expose-Headers", "Access-Control-Allow-Origin")
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Authorization");
+  next();
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

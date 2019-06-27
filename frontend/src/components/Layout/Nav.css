@@ -31,6 +31,16 @@
 .dropdown-menu .nav-item a {
     padding-left: 7px;
 }
+/* 
+@media (max-width: 1180px) {
+    .nav_title {
+        font-size: 2.5rem;
+    }
+
+    .nav_subtitle {
+        font-size: 1.5rem;
+    }
+} */
 
 @media (max-width: 993px) {
     a.nav_subtitle.nav-link.disabled {
@@ -41,5 +51,48 @@
 @media (max-width: 991px) {
     a.nav_subtitle.nav-link.disabled {
         display: none !important;
+    }
+}
+
+@media (max-width: 708px) {
+    .nav_title {
+        font-size: 2.5rem;
+    }
+
+    .nav_subtitle {
+        font-size: 1.7rem;
+    }
+}
+
+@media (max-width: 613px) {
+    .nav_title {
+        font-size: 2.2rem;
+    }
+
+    .nav_subtitle {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 552px) {
+    .nav_title {
+        font-size: 2rem;
+    }
+
+    .nav_subtitle {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 552px) {
+    .nav_title, .nav_subtitle {
+        display: none;
+    }
+}
+
+@media (max-width: 414px) {
+    .btnPosition {
+        position: absolute;
+        right: 15px;
     }
 }

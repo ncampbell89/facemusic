@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getAllPosts, addPostApi } from '../../redux/actions/updateActions';
-import { userIdAndName } from '../../redux/actions/authActions';
+import { checkIfUserLoggedIn } from '../../redux/actions/authActions';
 import PostList from './PostList';
 
 class Posts extends Component {
@@ -11,7 +11,8 @@ class Posts extends Component {
 
   componentDidMount() {
     this.props.getAllPosts()
-    this.props.userIdAndName()
+    this.props.checkIfUserLoggedIn()
+    // this.props.allComments()
   }
 
   postInput = event => {
@@ -29,23 +30,36 @@ class Posts extends Component {
   timeoutError = () => {
     setTimeout(() => {
       window.location.reload('/genrelist')
-    }, 2000)
+    }, 100000)
   }
 
   render() {
 
+    let splitted = window.location.href.split('/')
+    let identification = splitted[splitted.length - 1]
+
     let { posts, error, errorMessage } = this.props.update
-    let { user_id } = this.props.user
+    let { user_id, userPosts } = this.props.user 
 
-    const postArray = Object.assign([], posts)
-
-    let allPosts = postArray.map((item, index) => {
-      return (
-        <PostList key={item._id} userid={user_id} item={item} id={index} />
+    let allPosts;
+    
+    if(user_id !== identification) {
+      allPosts = (
+        userPosts.map((item, index) => {
+          return (
+            <PostList key={item._id} item={item} />
+          )
+        })
       )
-    })
-
-    console.log(postArray)
+    } else {
+      allPosts = (
+        posts.map((item, index) => {
+          return (
+            <PostList key={item._id} item={item} />
+          )
+        })
+      )
+    }
 
     return (
       <div className="mt-5">
@@ -91,4 +105,4 @@ const mapStateToProps = (state) => ({
   user: state.auth_state
 })
 
-export default connect(mapStateToProps, { getAllPosts, addPostApi, userIdAndName })(Posts)
+export default connect(mapStateToProps, { getAllPosts, addPostApi, checkIfUserLoggedIn })(Posts)

@@ -2,20 +2,16 @@ const User = require('./models/User');
 const FriendRequest = require('./models/FriendRequests');
 const PendingRequest = require('./models/PendingRequests');
 const Friends = require('./models/Friends');
-const MainPic = require('./models/MainPic');
 const uuid = require('uuidv4');
 
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const passport = require('passport-spotify');
 
 const SpotifyWebApi = require('spotify-web-api-node');
 
 const spotifyApi = new SpotifyWebApi({
-    clientId: 'b40a880e696b433981d9888e1f9c9ab3',
-    clientSecret: 'a549535cd6a042e8ae4ccf1e753405a6',
-    redirectUri: 'http://172.31.93.58:3001/auth/spotify/callback'
-    // redirectUri: 'http://localhost:3001/auth/spotify/callback'
+    clientId: '5445014665f14870bc86cc9e7e7a21d6',
+    clientSecret: '2d690fc37d6d4670a11f9d3cf19e2707',
+    redirectUri: 'https://www.facespotifymusic.com:3000'
 });
 
 module.exports = {
@@ -23,13 +19,15 @@ module.exports = {
     allUsers: () => {
         return new Promise((resolve, reject) => {
             User.find()
-            .then(users => resolve(users))
+            .then(users => {
+                resolve(users)
+            })
             .catch(err => reject(err))
         })
     },
 
     regLogin: (params) => {
-        
+
         return new Promise((resolve, reject) => {
             User.findOne({spotifyID: params.id})
             .then(user => {
@@ -37,7 +35,7 @@ module.exports = {
                 if(!user) {                   
 
                     const newUser = new User({
-                        name: params.name,
+                        name: params.display_name,
                         email: params.email,
                         password: params.password,
                         spotifyID: params.id
@@ -74,40 +72,39 @@ module.exports = {
     },
     
 
-    profilePic: (params) => {
+    editProfilePic: (picUrl) => {
+        return new Promise((resolve, reject) => {   
+            User.findOneAndUpdate({spotifyID: picUrl.id}, {$set: {profilePic: picUrl.newPic}}, {new: true})
+            .then(result => {
+                resolve(result)
+            })
+            .catch(err => {
+                reject(err)
+            })
+        })
+    },
+
+    profilePicUrl: (id) => {
         return new Promise((resolve, reject) => {
-
-            User.findOne({spotifyID: params.id})
-            .then(user => {
-                let newPicObj = new MainPic({
-                    url: params.newPic,
-                    user_id: params.picID
-                })
-
-                newPicObj.save()
-                .then(savedPic => {
-                    user.profilePic.unshift(savedPic)
-
-                    user.save()
-                    .then(result => resolve(result))
-                    .catch(err => reject(err))
-                })
-                .catch(err => reject(err))
+            User.findOne({spotifyID: id}, 'profilePic')
+            .then(result => {
+                resolve(result)
             })
             .catch(err => reject(err))
         })
     },
 
-    profilePicUrls: (id) => {
+    otherProfilePicUrl: (id) => {
         return new Promise((resolve, reject) => {
             User.findOne({spotifyID: id}, 'profilePic')
-            .populate('profilePic', '-user_id -__v')
-            .exec((err, user) => {
-                err ? reject(err) : resolve(user)
+            .then(result => {
+                resolve(result)
+            })
+            .catch(err => {
+                reject(err)
             })
         })
     },
-
 
     friendRequests: (params) => {
         return new Promise((resolve, reject) => {
@@ -117,7 +114,8 @@ module.exports = {
 
                 let newFriend = new FriendRequest({
                     name: params.name,
-                    user_id: params.sourceID
+                    source_id: params.sourceID,
+                    spotify_id: params.sourceID
                 })
 
                 newFriend.save()
@@ -145,6 +143,7 @@ module.exports = {
             .exec((err, user) => {
                 err ? reject(err) : resolve(user)
             })
+
         })
     },
 
@@ -213,18 +212,17 @@ module.exports = {
 
     pendingRequests: (params) => {
         return new Promise((resolve, reject) => {
-            console.log(params)
 
             User.findOne({spotifyID: params.sourceID})
             .then(found => {
                 let pending = new PendingRequest({
                     name: params.name,
-                    user_id: params.id
+                    source_id: params.sourceID,
+                    spotify_id: params.id
                 })
 
                 pending.save()
                 .then(saved => {
-                    console.log(found)
                     
                     found.pendingRequests.unshift(saved)
 
@@ -248,13 +246,17 @@ module.exports = {
         })
     },
 
-
-    friends: (params) => {
+    // adds new friend from accepted friend request
+    friends: (params) => {  
         return new Promise((resolve, reject) => {
+
             User.findOne({spotifyID: params.loggedInUser})
             .then(user => {
+
                 let newFriend = new Friends({
                     name: params.name,
+                    profilePic: params.profilePic,
+                    spotify_id: params.userID,                  
                     user_id: params.id
                 })
 
@@ -264,7 +266,7 @@ module.exports = {
                     user.friends.unshift(saved)   
 
                     user.save()
-                    .then((result) => {
+                    .then(() => {
                         // remove the accepted friend request from the list
                         let filtered = user.friendRequests.filter(item => {
                             return item != params.id
@@ -282,44 +284,40 @@ module.exports = {
                 .catch(err => reject(err))
             })
             .catch(err => reject(err))
+
         })
     },
 
-    // friendsSource: (params) => {
-    //     return new Promise((resolve, reject) => {
-    //         User.findOne({spotifyID: params.loggedInUser})
-    //         .then(user => {
-    //             let newFriend = new Friends({
-    //                 name: params.name,
-    //                 user_id: params.id
-    //             })
+    friendsSource: (params) => {
+        return new Promise((resolve, reject) => {
 
-    //             newFriend.save()
-    //             .then(saved => {
-    //                 // add the new friend(source) in the receiver's friends list
-    //                 user.friends.unshift(saved)   
+            // the other person's pending request should be filtered
+            User.findOne({spotifyID: params.userID})
+            .then(user => {
 
-    //                 user.save()
-    //                 .then((result) => {
-    //                     // remove the accepted friend request from the list
-    //                     let filtered = user.friendRequests.filter(item => {
-    //                         return item != params.id
-    //                     })
+                // adding mark to nicole
+                let newFriend = new Friends({
+                    name: params.loggedInName,
+                    profilePic: params.profilePic2,
+                    spotify_id: params.loggedInUser, 
+                    user_id: params.userID
+                })
 
-    //                     user.friendRequests = filtered
+                newFriend.save()
+                .then(saved => {
+                    // add the new friend(source) in the receiver's friends list
+                    user.friends.unshift(saved)   
 
-    //                     user.save()
-    //                         .then(result => resolve(result))
-    //                         .catch(err => reject(err))
-                        
-    //                 })
-    //                 .catch(err => reject(err))
-    //             })
-    //             .catch(err => reject(err))
-    //         })
-    //         .catch(err => reject(err))
-    //     })
-    // },
+                    user.save()
+                        .then(result => resolve(result))
+                        .catch(err => reject(err))
+                })
+                .catch(err => reject(err))
+                
+            })
+            .catch(err => reject(err))
+        })
+    },
 
     allFriends: (id) => {
         return new Promise((resolve, reject) => {
@@ -333,7 +331,7 @@ module.exports = {
 
     profilePage: (id) => {
         return new Promise((resolve, reject) => {
-            User.find({spotifyID: id})
+            User.findOne({spotifyID: id})
             .populate('posts')
             .populate('friends')
             .exec((err, user) => {
@@ -353,8 +351,6 @@ module.exports = {
                 } else if(user) {
                     spotifyApi.clientCredentialsGrant()
                     .then(data => {
-                        console.log('The access token expires in ' + data.body['expires_in']);
-                        console.log('The access token is ' + data.body['access_token']);
 
                         spotifyApi.setAccessToken(data.body['access_token'])
 
@@ -411,18 +407,6 @@ module.exports = {
                 reject(err)
             })
         })
-    },
-    // testAccount: (id) => {
-    //     allFriends(id)
-    //     .then(allResuts => {
-    //         profilePage(id)
-    //         .then(profileResult => {
-    //             finalResult = {
-    //                 allFriends: allResults,
-    //                 profilePage: profileResult
-    //             }
-    //             resolve(finalResult)
-    //         })
-    //     })
-    // }
+    }
+    
 }

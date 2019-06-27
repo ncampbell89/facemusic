@@ -20,6 +20,7 @@ import {
 
 var initialState = {
     genres: [],
+    otherGenres: [],
     spotifyGenres: [],
     images: [],
     access_code: '',
@@ -91,11 +92,18 @@ export default (state = initialState, action) => {
 
         case PLAYLIST_ERROR: 
             updated.error = true
-            updated.errorMessage = action.errMessage.message
+
+            let regex = /^.(\baccess\b)?.$/
+
+            if(updated.errorMessage.match(regex)) {
+                updated.errorMessage = action.errMessage.message + '. Please log out and log back in.'
+            }
+
             return updated;
 
         case OTHER_GENRES: 
-            updated.genres = action.payload           
+            console.log(action)
+            updated.otherGenres = action.payload           
             return updated;
 
         default:

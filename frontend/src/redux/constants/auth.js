@@ -23,7 +23,8 @@ export const PROFILE_PIC = 'PROFILE_PIC';
 export const MAIN_PIC = 'MAIN_PIC';
 
 export const OTHER_PROFILE = 'OTHER_PROFILE';
-export const OTHER_GENRES = 'OTHER_GENRES'
+export const OTHER_GENRES = 'OTHER_GENRES';
+export const OTHER_PROFILE_PIC = 'OTHER_PROFILE_PIC';
 
 export const DELETE_PIC = 'DELETE_PIC';
 

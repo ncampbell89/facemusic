@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import MainPic from '../Layout/MainPic';
 import { allusersapi, friendRequestsApi, pendingRequestsApi, 
-    allFriends, userIdAndName } from '../../redux/actions/authActions';
+    allFriends, checkIfUserLoggedIn } from '../../redux/actions/authActions';
 import { Link } from 'react-router-dom'
 
 class PeopleSearch extends Component {
@@ -13,7 +12,7 @@ class PeopleSearch extends Component {
     componentDidMount() {
         this.props.allusersapi()
         this.props.allFriends()
-        this.props.userIdAndName()      
+        this.props.checkIfUserLoggedIn()      
     }
 
     searchInput = (event) => {
@@ -40,7 +39,6 @@ class PeopleSearch extends Component {
     }
 
     render() { 
-        console.log(this.props.user) 
         let entries = Object.entries(this.state).map((x, i) => {
             return (
               <input 
@@ -65,14 +63,13 @@ class PeopleSearch extends Component {
         let searchList = allUsers.map((item, index) => {
             return (
                 <li key={index} className="list-group-item p-4" style={{listStyleType: 'none', display: 'flex'}}>
-                    <MainPic /> 
+                    <img src={item.profilePic} width="30" height="30" className="mainPic" alt="" />
                     <div style={{marginLeft: '1rem'}}>
                         <h5>
                             <b>
                             <Link to={`/profile/${item.spotifyID}`}>
                                 {item.name}
-                            </Link>
-                            
+                            </Link>                          
                             </b>
                         </h5>
 
@@ -120,4 +117,4 @@ const mapStateToProps = (state) => ({
 })
   
 export default connect(mapStateToProps, { allusersapi, friendRequestsApi, 
-    pendingRequestsApi, allFriends, userIdAndName })(PeopleSearch)
+    pendingRequestsApi, allFriends, checkIfUserLoggedIn })(PeopleSearch)

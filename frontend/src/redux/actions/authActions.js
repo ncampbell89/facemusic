@@ -23,6 +23,7 @@ import {
     PENDING_REQUEST_LIST,
 
     OTHER_PROFILE,
+    OTHER_PROFILE_PIC,
 
     FRIENDS,
     FRIENDS_LIST,
@@ -47,16 +48,6 @@ export const allusersapi = (obj, resultStr) => dispatch => {
 
 }
 
-export const userIdAndName = () => dispatch => {
-    const token = localStorage.getItem('jwtToken')
-    const decoded = jwt_decode(token)
-
-    dispatch({
-        type: USER_ID,
-        payload: decoded
-    })
-}
-
 export const logoutapi = () => dispatch => {
     localStorage.removeItem('jwtToken')
     localStorage.removeItem('spotifyBearerToken')
@@ -73,7 +64,6 @@ export const deleteaccount = () => dispatch => {
 
     Axios.delete(`/users/deleteaccount/${decoded.id}`)
     .then(result => {
-        console.log(result)
 
         localStorage.removeItem('jwtToken')
 
@@ -125,6 +115,9 @@ export const onSuccessapi = (response) => dispatch => {
 }
 
 export const checkIfUserLoggedIn = (decoded) => dispatch => {
+    const token = localStorage.getItem('jwtToken');
+    const decoded = jwt_decode(token);
+
     dispatch({
         type: LOG_IN_CHECK,
         payload: decoded
@@ -132,17 +125,9 @@ export const checkIfUserLoggedIn = (decoded) => dispatch => {
 }
 
 export const profilePic = (id, url) => dispatch => {
-    console.log(id, url)
 
     const token = localStorage.getItem('jwtToken');
     const decoded = jwt_decode(token);
-
-    const axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Access-Control-Allow-Origin': '*'
-        }
-    }
 
     let newObj = {
         picID: id,
@@ -150,27 +135,38 @@ export const profilePic = (id, url) => dispatch => {
         id: decoded.id
     }
 
-    Axios.post(`/users/profilepic`, newObj, axiosConfig)
+    Axios.put(`/users/profilepic/${decoded.id}?_method=PUT`, newObj)
     .then(result => {
-        console.log(result)
-
         dispatch({
             type: PROFILE_PIC,
-            payload: result.data.profilePic
+            payload: result.data
         })
     })
     .catch(err => console.log(JSON.stringify(err)))
+
 }
 
 export const profilePicUrls = () => dispatch => {
     const token = localStorage.getItem('jwtToken');
     const decoded = jwt_decode(token);
 
-    Axios.get(`/users/profilepics/${decoded.id}`)
+    Axios.get(`/users/profilepicurl/${decoded.id}`)
+    .then(result => {
+        dispatch({
+            type: MAIN_PIC,
+            payload: result.data
+        })
+    })
+    .catch(err => console.log(err))
+}
+
+export const otherPic = (id) => dispatch => {
+    // console.log(id)
+    Axios.get(`/users/otherprofilepicurl/${id}`)
     .then(result => {
         console.log(result)
         dispatch({
-            type: MAIN_PIC,
+            type: OTHER_PROFILE_PIC,
             payload: result.data
         })
     })
@@ -228,7 +224,6 @@ export const allFriendRequestsApi = (id) => dispatch => {
 
 
 export const pendingRequestsApi = (id, name) => dispatch => {
-    console.log(id, name)
 
     const token = localStorage.getItem('jwtToken')
     const decoded = jwt_decode(token)
@@ -263,7 +258,6 @@ export const cancelRequestApi = (id) => dispatch => {
 
     Axios.delete(`/users/cancelrequest/${decoded.id}?id=${id}&_method=DELETE`)
     .then(result => {
-        console.log(result)
 
         dispatch({
             type: CANCEL_REQUEST,
@@ -273,38 +267,59 @@ export const cancelRequestApi = (id) => dispatch => {
     .catch(err => console.log(JSON.stringify(err)))
 }
 
-export const friendsApi = (id, name) => dispatch => {
-    console.log('accepted')
+export const friendsApi = (id, name, userID) => dispatch => {
     const token = localStorage.getItem('jwtToken')
     const decoded = jwt_decode(token)
+    setAuthJWT(token)
 
-    const axiosConfig = {
-        headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Access-Control-Allow-Origin': '*'
-        }
-    }
+    console.log(decoded.id, userID)
 
-    let newFriend = {
-        id, name, loggedInUser: decoded.id
-    }
-
-    Axios.post(`/users/friends`, newFriend, axiosConfig)
+    Axios.get(`/users/profilepicurl/${userID}`)
     .then(result => {
         console.log(result)
-        dispatch({
-            type: FRIENDS,
-            payload: result.data
-        })
+        const axiosConfig = {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                'Access-Control-Allow-Origin': '*'
+            }
+        }
 
-        dispatch({
-            type: FRIEND_REQUESTS,
-            payload: result.data.friendRequests
+        Axios.get(`/users/profilepicurl/${decoded.id}`)
+        .then(decodedResult => {
+            console.log(decodedResult)
+
+            let newFriend = {
+                id, name, userID, 
+                loggedInUser: decoded.id, 
+                loggedInName: decoded.display_name,
+                profilePic: result.data.profilePic,
+                profilePic2: decodedResult.data.profilePic
+            }
+
+            Axios.post(`/users/friends`, newFriend, axiosConfig)
+            .then(result => {
+     
+                dispatch({
+                    type: FRIENDS,
+                    payload: result.data
+                })
+        
+                dispatch({
+                    type: FRIEND_REQUESTS,
+                    payload: result.data.friendRequests
+                })
+            })
+            .catch(err => {
+                console.log(JSON.stringify(err))
+            })
+
         })
+        .catch(err => console.log(err))
+    
+
     })
-    .catch(err => {
-        console.log(JSON.stringify(err))
-    })
+    .catch(err => console.log(err))
+
 }
 
 
@@ -314,7 +329,6 @@ export const declinedApi = (id) => dispatch => {
 
     Axios.delete(`/users/deleterequest/${decoded.id}?id=${id}&_method=DELETE`)
     .then(result => {
-        console.log(result)
 
         dispatch({
             type: DECLINE_REQUEST,
@@ -332,7 +346,6 @@ export const allFriends = () => dispatch => {
 
     Axios.get(`/users/allFriends/${decoded.id}`)
     .then(result => {
-        console.log(result)
         dispatch({
             type: FRIENDS_LIST,
             payload: result.data
@@ -347,6 +360,7 @@ export const allPendingRequestsApi = () => dispatch => {
 
     Axios.get(`/users/allpendingrequests/${decoded.id}`)
     .then(result => {
+        console.log(result)
         dispatch({
             type: PENDING_REQUEST_LIST,
             payload: result.data.pendingRequests
@@ -358,12 +372,14 @@ export const allPendingRequestsApi = () => dispatch => {
 }
 
 export const profilePage = (id) => dispatch => {
+
     Axios.get(`/users/profile/${id}`)
     .then(result => {
         dispatch({
             type: OTHER_PROFILE,
-            payload: result.data
+            payload: result.data,
         })       
     })
-    .catch(err => console.log(JSON.stringify(err)))
+    .catch(err => console.log(err))
+
 }

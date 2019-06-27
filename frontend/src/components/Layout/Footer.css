@@ -1,0 +1,13 @@
+@media (max-width: 708px) {
+    .footerList {
+        font-size: 0.8em;
+        padding: 0;
+    }
+}
+
+@media (max-width: 375px) {
+    .footerList {
+        font-size: 0.6em;
+        padding: 0;
+    }
+}

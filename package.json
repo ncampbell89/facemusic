@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "start": "node ./bin/www",
     "client": "npm start --prefix frontend",
+    "build": "react-scripts build",
     "dev": "concurrently \"npm run start\" \"npm run client\""
   },
   "dependencies": {

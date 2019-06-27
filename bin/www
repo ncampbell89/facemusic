@@ -4,8 +4,8 @@
  * Module dependencies.
  */
 
-var app = require('../backend/app');
-var debug = require('debug')('backend:server');
+var app = require('../app');
+var debug = require('debug')('server');
 var http = require('http');
 
 // var socket = require('../frontend/src/redux/actions/socket')

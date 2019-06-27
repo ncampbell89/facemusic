@@ -5,5 +5,5 @@ disableHostKeyChecking.sh
 kee-per.pem
 node_modules/
 /socket
-package-lock.json/
+package-lock.json
 
